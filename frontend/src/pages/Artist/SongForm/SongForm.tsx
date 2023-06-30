@@ -68,15 +68,29 @@ export default function SongForm(props: ISongFormProps) {
     }
   }, [imageFile, beforeImage])
 
+  const resetFormHandler = React.useCallback(() => {
+    setTitle('')
+    setDescription('')
+    setDuration('')
+    setImageFile(undefined)
+    setBeforeImage(null)
+    setSongFile(undefined)
+    setGenre(null)
+    setSelectedArtistList([])
+    songUploadInputRef.current!.value = ''
+    imageUploadInputRef.current!.value = ''
+  }, [])
+
   const createSongHandler = React.useCallback(() => {
     if (title && description && duration && genre && selectedArtistList && imageFile && songFile) {
       const artistJSON = JSON.stringify(selectedArtistList.map(a => a.id))
       const data = {title, description, duration, genre: genre.id, artists: artistJSON, image: imageFile, file: songFile}
       createSong(data).then(response => {
         dispatch(setNotf({message: 'Created Successfully!'}))
+        resetFormHandler()
       })
     }
-  }, [title, description, duration, genre, selectedArtistList, imageFile, songFile, dispatch])
+  }, [title, description, duration, genre, selectedArtistList, imageFile, songFile, dispatch, resetFormHandler])
 
   const updateSongHandler = React.useCallback(() => {
     if (songId && title && description && duration && genre && selectedArtistList) {

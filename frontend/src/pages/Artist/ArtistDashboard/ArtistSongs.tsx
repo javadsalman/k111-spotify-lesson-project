@@ -1,8 +1,9 @@
 import * as React from 'react';
 import ArtistSongItem from '../../../components/SongItem/ArtistSongItem';
-import { useAppSelector } from '../../../store/hooks';
-import { getSongList } from '../../../api/songApi';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { deleteSong, getSongList } from '../../../api/songApi';
 import { ISongSummary } from '../../../types';
+import { setNotf } from '../../../store/slices/notfSlice';
 
 export interface IArtistSongsProps {
 }
@@ -11,12 +12,20 @@ export default function ArtistSongs (props: IArtistSongsProps) {
   const [songs, setSongs] = React.useState<ISongSummary[]>([])
 
   const authData = useAppSelector(state => state.auth)
+  const dispatch = useAppDispatch()
 
   React.useEffect(() => {
     getSongList({artists: authData.id.toString()}, true).then(res => {
       setSongs(res.data)
+      dispatch(setNotf({message: 'Song deleted successfully!'}))
     })
-  }, [authData.id])
+  }, [authData.id, dispatch])
+
+  const songDeleteHandler = React.useCallback((id: number) => {
+    deleteSong(id).then(() => {
+      setSongs(prev => prev.filter(ps => ps.id !== id))
+    })
+  }, [])
 
   return (
     <div className='p-3'>
@@ -25,9 +34,10 @@ export default function ArtistSongs (props: IArtistSongsProps) {
       </div>
       <div className='flex flex-wrap gap-5'>
         {songs.map((song, index) => {
+          const onDelete = () => songDeleteHandler(song.id)
           return (
             <div key={song.id} className='w-60'>
-                <ArtistSongItem id={song.id} title={song.title} image={song.image} />
+                <ArtistSongItem onDelete={onDelete} id={song.id} title={song.title} image={song.image} />
             </div>
           )
         })}

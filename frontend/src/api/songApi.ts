@@ -44,6 +44,10 @@ export function updateSong(id: number, data: updateSongData) {
     })
 }
 
+export function deleteSong(id: number) {
+    return iaxios.delete(`/songs/${id}/`)
+}
+
 export function getSongList(params?: {[key: string]: string}|null, summary: boolean = false) {
     let url = summary ? '/songs-summary/' : '/songs/';
     if (params) {
