@@ -9,7 +9,7 @@ GENDER_CHOICES = [
 ]
 
 class Customer(models.Model):
-    user = models.OneToOneField('auth.User', on_delete=models.PROTECT)
+    user = models.OneToOneField('auth.User', on_delete=models.CASCADE)
     image = ProcessedImageField(upload_to='customer/images/', format='JPEG', options={'quality': 70}, null=True, blank=True)
     following_artists = models.ManyToManyField('Artist', related_name='followed_customers')
     birth_date = models.DateField()
@@ -21,7 +21,7 @@ class Customer(models.Model):
         return self.user.username
 
 class Artist(models.Model):
-    user = models.OneToOneField('auth.User', on_delete=models.PROTECT)
+    user = models.OneToOneField('auth.User', on_delete=models.CASCADE)
     image = ProcessedImageField(upload_to='artist/images/', format='JPEG', options={'quality': 70}, null=True, blank=True)
     verified = models.BooleanField(default=False)
     birth_date = models.DateField()
