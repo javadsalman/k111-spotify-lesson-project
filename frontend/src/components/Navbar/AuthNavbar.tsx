@@ -44,20 +44,22 @@ function AuthNavbar() {
           <img width="150" src={spotifyLogo} alt="sptofiy-logo" />
 
           <Box sx={{ display: 'flex', ml: 'auto' }}>
+            <NavLink to="/login">
               <Button
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 Listener
               </Button>
-              <NavLink to="/artist/login/">
-                <Button
-                  // onClick={() => navigate('/artist-login')}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                  Artist
-                </Button>
-              </NavLink>
+            </NavLink>
+            <NavLink to="/artist/login">
+              <Button
+                // onClick={() => navigate('/artist-login')}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Artist
+              </Button>
+            </NavLink>
           </Box>
 
         </Toolbar>

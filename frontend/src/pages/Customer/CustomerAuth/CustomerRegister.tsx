@@ -10,7 +10,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useAppDispatch } from '../../../store/hooks';
-import { artistRegisterAction } from '../../../store/slices/authSlice';
+import { customerRegisterAction } from '../../../store/slices/authSlice';
 import { Link } from 'react-router-dom'
 
 
@@ -24,10 +24,10 @@ autem molestias laudantium a quibusdam aliquid non error sit at excepturi conseq
 doloribus eaque accusamus molestiae aliquam quam omnis.
 `.repeat(10)
 
-export interface IArtistRegisterProps {
+export interface ICustomerRegisterProps {
 }
 
-export default function ArtistRegister(props: IArtistRegisterProps) {
+export default function CustomerRegister(props: ICustomerRegisterProps) {
   const [tapModalOpen, setTapModalOpen] = React.useState<boolean>(false)
   const [firstName, setFirstName] = React.useState<string>('');
   const [lastName, setLastName] = React.useState<string>('');
@@ -60,13 +60,13 @@ export default function ArtistRegister(props: IArtistRegisterProps) {
         gender, 
         image: imageFile
       }
-      dispatch(artistRegisterAction(data))
+      dispatch(customerRegisterAction(data))
     }
   }
 
   return (
     <form className='bg-neutral-800 w-full md:w-1/2 mx-auto mt-20 mb-40 p-5 flex flex-col gap-3 rounded'>
-      <div className="text-center text-4xl mb-3">Artist Register</div>
+      <div className="text-center text-4xl mb-3">Customer Register</div>
       <TextField value={firstName} onChange={(e) => setFirstName(e.target.value)} id="outlined-basic" label="First Name" variant="outlined" fullWidth />
       <TextField value={lastName} onChange={(e) => setLastName(e.target.value)} id="outlined-basic" label="Lastname" variant="outlined" fullWidth />
       <TextField value={username} onChange={(e) => setUsername(e.target.value)} id="outlined-basic" label="Username" variant="outlined" fullWidth />
@@ -110,7 +110,7 @@ export default function ArtistRegister(props: IArtistRegisterProps) {
       
       <Button variant="contained" fullWidth size="large" onClick={submitHandler}>Register</Button>
       <div className='text-center'>
-        <Link to="/artist/login">Sign In</Link>
+        <Link to="/login">Sign In</Link>
       </div>
       <TermsAndPrivacyModal open={tapModalOpen} text={TERMS_AND_PRIVACY} onClose={() => setTapModalOpen(false)} />
     </form>

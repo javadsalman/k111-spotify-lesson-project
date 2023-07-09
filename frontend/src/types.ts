@@ -28,3 +28,23 @@ export interface ISong {
    like_count: number;
    title: string;
 }
+
+export interface IPlaylist {
+   created: string;
+   customer: number;
+   creator_name: string;
+   id: number;
+   image: string|null;
+   like_count: number;
+   liked: boolean;
+   songs: ISong[];
+   title: string;
+   updated: string;
+}
+
+export interface IPaginatedResponse<T> {
+   count: 0;
+   next: string | null;
+   previous: string | null;
+   results: T[];
+}

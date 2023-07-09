@@ -19,7 +19,7 @@ def customer_login_view(request):
     if user:
         serializer = serializers.CustomerAuthSerializer(instance=user.customer)
         return Response(serializer.data)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+    return Response({'detail': 'Username or Password is wrong!'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
@@ -50,7 +50,14 @@ class ArtistRegisterAV(generics.CreateAPIView):
     
 class ArtistAuthDetailAV(generics.RetrieveUpdateAPIView):
     serializer_class = serializers.ArtistAuthSerializer
-    queryset = Artist.objects.all()
+    def get_object(self):
+        return self.request.user.artist
+    parser_classes = [FormParser, MultiPartParser, JSONParser]
+    
+class CustomerAuthDetailAV(generics.RetrieveUpdateAPIView):
+    serializer_class = serializers.CustomerAuthSerializer
+    def get_object(self):
+        return self.request.user.customer
     parser_classes = [FormParser, MultiPartParser, JSONParser]
 
 

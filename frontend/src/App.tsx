@@ -16,6 +16,13 @@ import { removeNotf } from './store/slices/notfSlice';
 import ArtistProfile from './pages/Artist/ArtistDashboard/ArtistProfile';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import CustomerLogin from './pages/Customer/CustomerAuth/CustomerLogin';
+import CustomerRegister from './pages/Customer/CustomerAuth/CustomerRegister';
+import CustomerLayout from './HOC/Layout/CustomerLayout';
+import HomePage from './pages/Customer/HomePage/HomePage';
+import PlaylistPage from './pages/Customer/PlaylistPage/PlaylistPage';
+import SearchPage from './pages/Customer/SearchPage/SearchPage';
+import CustomerProfile from './pages/Customer/CustomerProfilePage/CustomerProfilePage';
 
 const darkTheme = createTheme({
   palette: {
@@ -38,8 +45,8 @@ function App() {
       return (
         <AuthLayout>
           <Routes>
-            <Route path="/login" element={<div>Customer Login</div>} />
-            <Route path="/register" element={<div>Customer Register</div>} />
+            <Route path="/login" element={<CustomerLogin />} />
+            <Route path="/register" element={<CustomerRegister />} />
             <Route path="/artist/login/" element={<ArtistLogin />} />
             <Route path="/artist/register/" element={<ArtistRegister />} />
             <Route path="/*" element={<Navigate to="/login" />} />
@@ -56,6 +63,21 @@ function App() {
             <Route path="/*" element={<Navigate to="/" />} />
           </Routes>
         </ArtistLayout>
+      )
+    } else if (authData.user_type === 'customer') {
+      return (
+        <CustomerLayout>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/playlist/:playlistId" element={<PlaylistPage />} />
+            <Route path="/profile" element={<CustomerProfile />} />
+            <Route path="/search">
+              <Route index element={<SearchPage />} />
+              <Route path=":query" element={<SearchPage />} />
+            </Route>
+            <Route path="/*" element={<Navigate to="/" />} />
+          </Routes>
+        </CustomerLayout>
       )
     }
   }, [authData])

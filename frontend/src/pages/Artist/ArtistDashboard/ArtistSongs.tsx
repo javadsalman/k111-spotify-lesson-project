@@ -15,17 +15,17 @@ export default function ArtistSongs (props: IArtistSongsProps) {
   const dispatch = useAppDispatch()
 
   React.useEffect(() => {
-    getSongList({artists: authData.id.toString()}, true).then(res => {
-      setSongs(res.data)
-      dispatch(setNotf({message: 'Song deleted successfully!'}))
+    getSongList({ summary: true, params: {artists: authData.id.toString()}}).then(res => {
+      setSongs(res.data.results)
     })
-  }, [authData.id, dispatch])
+  }, [authData.id])
 
   const songDeleteHandler = React.useCallback((id: number) => {
     deleteSong(id).then(() => {
       setSongs(prev => prev.filter(ps => ps.id !== id))
+      dispatch(setNotf({message: 'Song deleted successfully!'}))
     })
-  }, [])
+  }, [dispatch])
 
   return (
     <div className='p-3'>

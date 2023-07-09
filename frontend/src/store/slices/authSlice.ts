@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { ICustomerRegisterParams, loginArtist, loginCustomer, logout, registerArtist } from "../../api/authApi"
+import { ICustomerRegisterParams, loginArtist, loginCustomer, logout, registerArtist, registerCustomer } from "../../api/authApi"
 import { setTokenToAxiosInstance, removeTokenFromAxiosInstance } from "../../api/iaxios"
 import { setNotf } from "./notfSlice"
 
@@ -35,10 +35,14 @@ const authSlice = createSlice({
         resetAuthData() {
             return initialState
         },
+        setLogout() {
+            const state = {...initialState, user_type: 'unauthorized'}
+            return state
+        }
     }
 })
 
-export const { setAuthData, resetAuthData } = authSlice.actions
+export const { setAuthData, resetAuthData, setLogout } = authSlice.actions
 
 export default authSlice
 
@@ -55,15 +59,6 @@ export const loadStoredAuthData = createAsyncThunk<void, void>(
         } else {
             dispatch(setAuthData({...initialState, user_type: 'unauthorized'}))
         }
-    }
-)
-
-export const customerLoginAction = createAsyncThunk<void, {username: string, password: string}>(
-    'customerLoginAction',
-    async ({username, password}, {dispatch}) => {
-        const response = await loginCustomer(username, password)
-        const loginData = response.data
-        dispatch(setAuthData(loginData))
     }
 )
 
@@ -95,6 +90,40 @@ export const artistRegisterAction = createAsyncThunk<void, ICustomerRegisterPara
         sessionStorage.setItem('authData', JSON.stringify(registerData))
         setTokenToAxiosInstance(registerData.token)
         dispatch(setAuthData(registerData))
+        dispatch(setNotf({message: 'You have registered successfully!'}))
+    }
+)
+
+
+export const customerLoginAction = createAsyncThunk<void, {username: string, password: string, rememberMe: boolean}>(
+    'customerLoginAction',
+    async ({username, password, rememberMe}, {dispatch}) => {
+        try {
+            const response = await loginCustomer(username, password)
+            const loginData = response.data
+            if (rememberMe)
+                localStorage.setItem('authData', JSON.stringify(loginData))
+            else
+                sessionStorage.setItem('authData', JSON.stringify(loginData))
+            setTokenToAxiosInstance(loginData.token)
+            dispatch(setAuthData(loginData))
+            dispatch(setNotf({message: 'Login Successfully!'}))
+        } catch (error: any) {
+            dispatch(setNotf({message: error.response.data.detail, color: 'error'}))
+        }
+    }
+)
+
+
+export const customerRegisterAction = createAsyncThunk<void, ICustomerRegisterParams>(
+    'customerRegisterAction',
+    async (data, {dispatch}) => {
+        const response = await registerCustomer(data)
+        const registerData = response.data
+        sessionStorage.setItem('authData', JSON.stringify(registerData))
+        setTokenToAxiosInstance(registerData.token)
+        dispatch(setAuthData(registerData))
+        dispatch(setNotf({message: 'You have registered successfully!'}))
     }
 )
 
@@ -106,7 +135,7 @@ export const logoutAction = createAsyncThunk<void, void>(
             removeTokenFromAxiosInstance()
             localStorage.removeItem('authData')
             sessionStorage.removeItem('authData')
-            dispatch(resetAuthData())
+            dispatch(setLogout())
         })
     }
 )

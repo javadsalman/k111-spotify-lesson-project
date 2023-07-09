@@ -10,6 +10,7 @@ urlpatterns = [
     path('artist-login/', views.artist_login_view, name='artist-login'),
     path('artists/', views.ArtistListAV.as_view(), name='artist-list'),
     path('artists/<int:pk>/', views.ArtistDetailAV.as_view(), name='artist-detail'),
-    path('artists/<int:pk>/auth/', views.ArtistAuthDetailAV.as_view(), name='artist-auth'),
+    path('artists/auth/', views.ArtistAuthDetailAV.as_view(), name='artist-auth'),
+    path('customers/auth/', views.CustomerAuthDetailAV.as_view(), name='customer-auth'),
     path('logout/', views.logout_view, name='logout'),
 ]

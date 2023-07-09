@@ -1,25 +1,37 @@
 import * as React from 'react';
+import CustomerSidebar from '../../components/Sidebar/CustomerSideBar';
+import CustomerHistory from '../../containers/Customer/CustomerHistory/CustomerHistory';
+import CustomerNavbar from '../../components/Navbar/CustomerNavbar';
+import Player from '../../containers/Customer/Player/Player';
 
-export interface ILayoutProps {
+export interface ICustomerLayoutProps {
     children: React.ReactNode
 }
 
-export default function Layout (props: ILayoutProps) {
+export default function CustomerLayout (props: ICustomerLayoutProps) {
   return (
     <div className='w-screen h-screen flex flex-col'>
       <div className='flex-grow flex items-stretch gap-1'>
-        <aside className='w-60 shrink-0 flex flex-col gap-1'>
-          <div className='basis-2/12 bg-cyan-300'></div>
-          <div className='flex-grow bg-emerald-700'></div>
+        <aside className='w-80 shrink-0 flex flex-col gap-1'>
+          <div className=''>
+            <CustomerSidebar />
+          </div>
+          <div className='flex-grow'>
+            <CustomerHistory />
+          </div>
         </aside>
-        <div className='bg-indigo-700 flex-grow flex flex-col'>
-          <header className='bg-violet-300 p-10'></header>
-          <main className='flex-grow bg-pink-500'>
+        <div className='flex-grow flex flex-col'>
+          <header className=''>
+            <CustomerNavbar />
+          </header>
+          <main className='flex-grow relative'>
             {props.children}
           </main>
         </div>
       </div>
-      <section className='p-12 bg-orange-800'></section>
+      <section className=''>
+        <Player />
+      </section>
     </div>
   );
 }

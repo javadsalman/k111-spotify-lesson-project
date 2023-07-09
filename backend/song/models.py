@@ -15,8 +15,9 @@ class Genre(models.Model):
 class Playlist(models.Model):
     title = models.CharField(max_length=100)
     customer = models.ForeignKey('user.Customer', on_delete=models.SET_NULL, null=True, blank=True, related_name='playlists')
-    image = ProcessedImageField(upload_to='playlist/images/', format='JPEG', options={'quality': 70})
+    image = ProcessedImageField(upload_to='playlist/images/', format='JPEG', options={'quality': 70}, null=True, blank=True)
     liked_customers = models.ManyToManyField('user.Customer', related_name='liked_playlists', blank=True)
+    songs = models.ManyToManyField('Song', related_name='playlists', blank=True)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     
@@ -32,7 +33,6 @@ class Song(models.Model):
     image = ProcessedImageField(upload_to='song/images/', format='JPEG', options={'quality': 70})
     file = models.FileField(upload_to='song/files/')
     artists = models.ManyToManyField('user.Artist', related_name='songs')
-    playlists = models.ManyToManyField(Playlist, related_name='songs', blank=True)
     liked_customers = models.ManyToManyField('user.Customer', related_name='liked_songs', blank=True)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -41,3 +41,15 @@ class Song(models.Model):
         return self.title
     
 
+HISTORY_TYPES = [
+    ('artist', 'Artist'),
+    ('playlist', 'Playlist')
+]
+class ListenHistory(models.Model):
+    customer = models.ForeignKey('user.Customer', on_delete=models.CASCADE, related_name='listen_histories')
+    type = models.CharField(max_length=100, choices=HISTORY_TYPES)
+    playlist = models.ForeignKey('song.Playlist', on_delete=models.CASCADE, null=True, blank=True)
+    artist = models.ForeignKey('user.Artist', on_delete=models.CASCADE, null=True, blank=True)
+    pinned = models.BooleanField(default=False)
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)

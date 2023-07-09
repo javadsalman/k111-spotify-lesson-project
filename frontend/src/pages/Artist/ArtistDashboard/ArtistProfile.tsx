@@ -38,7 +38,7 @@ export default function ArtistProfile(props: IArtistProfileProps) {
   const informationsSaveHandler = React.useCallback(() => {
     if (firstName && lastName && username && email && birthDate) {
       const data = { first_name: firstName, last_name: lastName, email, username, birth_date: birthDate.format('YYYY-MM-DD') }
-      changeArtistInformations(authData.id, data).then(res => {
+      changeArtistInformations(data).then(res => {
         dispatch(setNotf({ message: 'User informations updated successfully!' }))
         dispatch(changeAuthData({...res.data, user_type: 'artist'}))
         setFirstName(res.data.first_name)
@@ -48,7 +48,7 @@ export default function ArtistProfile(props: IArtistProfileProps) {
         setBirthDate(dayjs(res.data.birth_date))
       })
     }
-  }, [firstName, lastName, email, username, birthDate, authData, dispatch])
+  }, [firstName, lastName, email, username, birthDate, dispatch])
 
   const passwordUpdateHandler = React.useCallback(() => {
     if (!password || !passwordAgain) {
@@ -56,11 +56,11 @@ export default function ArtistProfile(props: IArtistProfileProps) {
     } else if (password !== passwordAgain) {
       dispatch(setNotf({ message: 'Password fields must be same!', color: 'error' }))
     } else {
-      changeArtistPassword(authData.id, password).then(res => {
+      changeArtistPassword(password).then(res => {
         dispatch(setNotf({ message: 'Password has changed successfully!' }))
       })
     }
-  }, [password, passwordAgain, dispatch, authData.id])
+  }, [password, passwordAgain, dispatch])
 
   const imageDialogCloseHandler = React.useCallback(() => {
     imageUploadInputRef.current!.value = ''
@@ -70,16 +70,16 @@ export default function ArtistProfile(props: IArtistProfileProps) {
 
   const imageUploadHandler = React.useCallback(() => {
     if (imageFile) {
-      changeArtistImage(authData.id, imageFile).then(res => {
+      changeArtistImage(imageFile).then(res => {
         dispatch(changeAuthData({...res.data, user_type: 'artist'}))
         imageDialogCloseHandler()
         dispatch(setNotf({message: 'Profile image updated successfully!'}))
       })
     }
-  }, [authData, imageFile, dispatch, imageDialogCloseHandler])
+  }, [imageFile, dispatch, imageDialogCloseHandler])
 
   React.useEffect(() => {
-    getArtistAuthInfo(authData.id).then(res => {
+    getArtistAuthInfo().then(res => {
       const userInfo = res.data
       setFirstName(userInfo.first_name)
       setLastName(userInfo.last_name)

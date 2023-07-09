@@ -23,10 +23,21 @@ class CustomerAuthSerializer(serializers.ModelSerializer):
         
     def create(self, validated_data):
         user = validated_data.pop('user')
-        image = validated_data.get('image')
         user = User.objects.create_user(**user)
         customer = Customer.objects.create(user=user, **validated_data)
         return customer
+    
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user') if 'user' in validated_data else {}
+        user = instance.user
+        for key, value in user_data.items():
+            setattr(user, key, value)
+        user.save()
+        
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
+        instance.save()
+        return instance
         
     def get_token(self, instance):
         return Token.objects.get_or_create(user=instance.user)[0].key
